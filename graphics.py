@@ -4,7 +4,7 @@ import sys
 
 pygame.init()
 
-font = pygame.font.Font(None, 16)
+font = pygame.font.Font(None, 24)
 clock = pygame.time.Clock()
 
 keys = {"right" : pygame.K_RIGHT,
@@ -76,6 +76,7 @@ def write(text, position, colour=(255,255,255)):
     if colour in colours:
         colour = colours[colour]
     screen.blit(font.render(str(text), 1, colour), position)
+
 
 def keydown(key):
     return pygame.key.get_pressed()[keys[key]]

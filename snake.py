@@ -1,4 +1,4 @@
-from graphics import *
+from doodle import *
 
 # A function to add a berry to the screen
 def add_berry(berries, snake):

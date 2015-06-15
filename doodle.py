@@ -45,13 +45,17 @@ colours = {"red"    : (176,57,25),
            "blue"   : (25,95,176),
            "yellow" : (250,237,57),
            "black"  : (0,0,0),
+           "grey"   : (128,128,128),
            "white"  : (255,255,255)}
 
 images = ["png","jpg","jpeg","gif","bmp","pcx","tga","lbm","pbm","pgm","ppm","xpm"]
 
+events = []
+
 def make_window(x_size, y_size):
     global screen
     screen = pygame.display.set_mode((x_size, y_size))
+    pygame.display.set_caption("Doodle game")
 
 def load(location):
     if location.split(".")[-1].lower() in images:
@@ -60,11 +64,14 @@ def load(location):
 def draw_picture(picture, position):
     screen.blit(picture, position)
 
-def draw_box(colour, size, position):
+def rotate_picture(picture, angle):
+    return pygame.transform.rotate(picture, angle)
+
+def draw_box(colour, size, position, border=0):
     if colour in colours:
-        pygame.draw.rect(screen, colours[colour], (position, size))
+        pygame.draw.rect(screen, colours[colour], (position, size), border)
     else:
-        pygame.draw.rect(screen, colour, (position,size))
+        pygame.draw.rect(screen, colour, (position,size), border)
 
 def fill(colour):
     if colour in colours:
@@ -83,6 +90,9 @@ def keydown(key):
 
 def rand(lower, upper):
     return random.randint(lower,upper)
+
+def get_events():
+    return events
 
 def get_fps():
     return clock.get_fps()
@@ -103,8 +113,11 @@ def stop():
     sys.exit()
 
 def next_frame():
+    global events
     clock.tick(30)
     pygame.event.pump()
+    
+    events = []
     
     for i in pygame.event.get():
         if i.type == pygame.QUIT:
@@ -112,6 +125,8 @@ def next_frame():
         if i.type == pygame.KEYDOWN:
             if i.key == pygame.K_ESCAPE:
                 sys.exit()
+        else:
+            events.append(i)
     
     pygame.display.flip()
     screen.fill((0,0,0))

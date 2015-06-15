@@ -13,6 +13,18 @@ def add_berry(berries, snake):
     berries.append(new_berry)
 
 
+# Directions
+RIGHT = (1, 0)
+LEFT = (-1, 0)
+UP = (0, -1)
+DOWN = (0, 1)
+
+# Load the images
+berry_image = load("berry.png")
+snake_image = load("snake.png")
+head_image = load("head.png")
+rotated_head_image = head_image
+
 # Create our snake and berries
 snake = [[3,5],[4,5],[5,5],[6,5]]
 berries = [[rand(0,31), rand(0,23)]]
@@ -42,14 +54,18 @@ while True:
     # Check for input from the player
     # We check the last direction so going the opposite direction
     # doesn't kill you!
-    if keydown("left") and last_direction != (1, 0):
-        direction = (-1, 0)
-    elif keydown("right") and last_direction != (-1, 0):
-        direction = (1, 0)
-    elif keydown("up") and last_direction != (0, 1):
-        direction = (0, -1)
-    elif keydown("down") and last_direction != (0, -1):
-        direction = (0, 1)
+    if keydown("left") and last_direction != RIGHT:
+        direction = LEFT
+        rotated_head_image = rotate_picture(head_image, 180)
+    elif keydown("right") and last_direction != LEFT:
+        direction = RIGHT
+        rotated_head_image = rotate_picture(head_image, 0)
+    elif keydown("up") and last_direction != DOWN:
+        direction = UP
+        rotated_head_image = rotate_picture(head_image, 90)
+    elif keydown("down") and last_direction != UP:
+        direction = DOWN
+        rotated_head_image = rotate_picture(head_image, 270)
     
     
     # Draw the world, and write the score
@@ -57,18 +73,26 @@ while True:
     write("Score: "+str(score), (20, 20), "black")
     
     # Draw each snake segment in turn
-    for segment in snake:
+    # We miss the last segment as this is the head, which we want to draw separately
+    for segment in snake[:-1]:
         segment_x = segment[0] * 20
         segment_y = segment[1] * 20
         
-        draw_box("yellow", (20, 20), (segment_x, segment_y))
+        draw_picture(snake_image, (segment_x, segment_y))
+    
+    # Draw the head
+    segment_x = snake[-1][0] * 20
+    segment_y = snake[-1][1] * 20
+    
+    draw_picture(rotated_head_image, (segment_x, segment_y))
+    
     
     # And the same for the berries
     for berry in berries:
         berry_x = berry[0] * 20
         berry_y = berry[1] * 20
         
-        draw_box("red", (20, 20), (berry_x, berry_y))
+        draw_picture(berry_image, (berry_x, berry_y))
     
     
     # Move the snake, but only when enough time has passed
@@ -78,7 +102,7 @@ while True:
                        snake[-1][1] + direction[1]]
         
         # Check the snake didn't hit itself!
-        if new_segment not in snake:
+        if new_segment not in snake[1:]:
             # Check the snake hasn't gone off the side of the screen
             if new_segment[0] >= 0 and new_segment[0] <= 31:
                 # And make sure it hasn't gone off the top or bottom

@@ -71,10 +71,10 @@ Keys:
 
 ## How to use?
 
-Easy! Just put *graphics.py* in the same folder as your code, and at the top of the file write:
+Easy! Just put *doodle.py* in the same folder as your code, and at the top of the file write:
 
 ```
-from graphics import *
+from doodle import *
 ```
 
 ## Requirements
